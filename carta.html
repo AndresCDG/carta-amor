@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Carta de Amor — Ábreme ❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#FFF7F9;
+      --card:#fff;
+      --accent:#ff6b81;
+      --accent-dark:#d94a66;
+      --shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;display:flex;align-items:center;justify-content:center;flex-direction:column;
+      background: radial-gradient(1200px 500px at 10% 10%, rgba(255,235,240,0.6), transparent), var(--bg);
+      font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      color:#333;
+      padding:40px;
+    }
+    h1{font-family:'Playfair Display', serif;color:var(--accent-dark);margin:8px 0 24px}
+
+    /* Card container */
+    .card-wrap{width:340px;max-width:92vw; perspective:1200px}
+    .card{
+      width:100%;height:220px;position:relative;cursor:pointer;
+      transform-style:preserve-3d;transition:transform 700ms cubic-bezier(.2,.9,.3,1);
+    }
+
+    /* Envelope / cover */
+    .cover{
+      position:absolute;inset:0;background:linear-gradient(180deg, #fff 0%, #fff 60%, #ffeef2 100%);
+      border-radius:14px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;overflow:hidden;
+      transform-origin:top;transition:transform 700ms cubic-bezier(.2,.9,.3,1);
+    }
+    .cover::before{
+      content:'';position:absolute;left:-20%;top:-40%;width:140%;height:120%;
+      background:radial-gradient(ellipse at 20% 10%, rgba(255,107,129,0.08), transparent 20%),
+                 radial-gradient(ellipse at 80% 80%, rgba(217,74,102,0.04), transparent 10%);
+      transform:rotate(-6deg);
+    }
+    .seal{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-20%);
+      width:120px;height:120px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:white;font-weight:700;font-size:40px;
+      box-shadow:0 6px 18px rgba(217,74,102,0.24);
+      transition:transform 400ms ease;z-index:2
+    }
+    .cover .title{position:relative;z-index:3;text-align:center;padding:18px 28px}
+    .cover .title h2{margin:0;font-family:'Playfair Display',serif;font-size:20px}
+    .cover .title p{margin:6px 0 0;font-size:13px;opacity:0.9}
+
+    /* Inner message */
+    .message{
+      position:absolute;inset:0;padding:28px;border-radius:12px;background:linear-gradient(180deg,#fff,#fff);
+      box-shadow:inset 0 2px 0 rgba(0,0,0,0.02);transform:translateZ(-1px);
+      display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;transition:opacity 450ms ease 250ms;
+    }
+    .message .paper{
+      width:100%;height:100%;border-radius:10px;padding:18px 20px;overflow:auto;
+      font-family:'Playfair Display', serif;color:#4b3136;background:linear-gradient(180deg,#fff 0%,#fff 95%);
+    }
+    .message .paper p{margin:0 0 12px;line-height:1.5;font-size:15px}
+    .message .paper .signature{margin-top:18px;text-align:right;font-weight:600}
+
+    /* Open state */
+    .card.open .cover{transform:rotateX(-160deg);box-shadow:none}
+    .card.open .seal{transform:translate(-50%,-20%) scale(0.8) rotate(-6deg)}
+    .card.open .message{opacity:1}
+
+    /* small hint */
+    .hint{margin-top:18px;font-size:13px;color:#7b6b6f;opacity:0.95}
+
+    /* Accessibility: focus */
+    .open-btn{margin-top:16px;display:inline-block;padding:10px 18px;border-radius:999px;background:transparent;border:1px solid var(--accent);color:var(--accent-dark);font-weight:600;cursor:pointer}
+    .open-btn:active{transform:translateY(1px)}
+
+    @media (min-width:700px){
+      .card{height:260px}
+    }
+  </style>
+</head>
+<body>
+  <h1>Ábreme ❤️</h1>
+  <div class="card-wrap" aria-label="Carta de amor" role="button">
+    <div class="card" id="card" tabindex="0">
+      <div class="cover">
+        <div class="seal">💌</div>
+        <div class="title">
+          <h2>Para mi amor</h2>
+          <p>Haz click para abrir y leer lo que tengo para ti.</p>
+        </div>
+      </div>
+
+      <div class="message" id="message" aria-hidden="true">
+        <div class="paper">
+          <p>Mi vida,</p>
+          <p>Cada día a tu lado convierte lo ordinario en extraordinario. Me enamoro de ti una y otra vez —de tu risa, de tu mirada, de la manera en que haces que hasta los momentos más simples tengan sentido.</p>
+          <p>Gracias por tu cariño, por ser mi compañera y por llenar mis días de luz. Quiero seguir construyendo recuerdos contigo, tomados de la mano, paso a paso.</p>
+          <p class="signature">Con todo mi amor,<br>Tu (Andres)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hint">Puedes hacer click en la carta o presionar la tecla <strong>Enter</strong>.</div>
+  <button class="open-btn" id="toggle">Abrir / Cerrar</button>
+
+  <script>
+    const card = document.getElementById('card');
+    const toggle = document.getElementById('toggle');
+
+    function toggleCard(){
+      const isOpen = card.classList.toggle('open');
+      card.setAttribute('aria-pressed', isOpen);
+      const msg = document.getElementById('message');
+      msg.setAttribute('aria-hidden', !isOpen);
+    }
+
+    // Click anywhere on the card or the button
+    card.addEventListener('click', (e)=>{
+      // allow clicking on inner elements
+      toggleCard();
+    });
+    toggle.addEventListener('click', (e)=>{ e.stopPropagation(); toggleCard(); });
+
+    // Keyboard accessibility
+    card.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleCard(); }
+    });
+  </script>
+</body>
+</html>
